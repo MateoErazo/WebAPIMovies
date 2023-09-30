@@ -13,12 +13,14 @@ namespace WebAPIMovies
 
     public void ConfigureServices(IServiceCollection services)
     {
-      services.AddControllers();
+      services.AddAutoMapper(typeof(Startup));
 
       services.AddDbContext<ApplicationDbContext>(options =>
       {
         options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
       });
+
+      services.AddControllers();
 
     }
 
