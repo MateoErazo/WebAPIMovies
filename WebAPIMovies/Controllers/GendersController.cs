@@ -2,12 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
-using WebAPIMovies.DTOs;
+using WebAPIMovies.DTOs.Gender;
 using WebAPIMovies.Entities;
 
 namespace WebAPIMovies.Controllers
 {
-  [ApiController]
+    [ApiController]
   [Route("api/genders")]
   public class GendersController:ControllerBase
   {
@@ -94,7 +94,11 @@ namespace WebAPIMovies.Controllers
 
     }
 
-
+    /// <summary>
+    /// Delete an specific gender permanently
+    /// </summary>
+    /// <param name="id">Id gender to delete</param>
+    /// <returns></returns>
     [HttpDelete("{id:int}",Name ="deleteGender")]
     public async Task<ActionResult> DeleteGender(int id)
     {
