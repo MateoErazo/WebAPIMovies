@@ -58,7 +58,7 @@ namespace WebAPIMovies.Controllers
     /// <param name="actorCreationDTO"></param>
     /// <returns>Actor created if It's successful process</returns>
     [HttpPost(Name ="addNewActor")]
-    public async Task<ActionResult> AddNewActor(ActorCreationDTO actorCreationDTO)
+    public async Task<ActionResult> AddNewActor([FromForm] ActorCreationDTO actorCreationDTO)
     {
       Actor actor = mapper.Map<Actor>(actorCreationDTO);
       context.Add(actor);
@@ -76,7 +76,7 @@ namespace WebAPIMovies.Controllers
     /// <param name="actorPutDTO">Actor Object with the new data</param>
     /// <returns></returns>
     [HttpPut("{id:int}",Name ="putActor")]
-    public async Task<ActionResult> PutActor(int id, ActorPutDTO actorPutDTO)
+    public async Task<ActionResult> PutActor(int id, [FromForm] ActorPutDTO actorPutDTO)
     {
       bool existActor = await context.Actors.AnyAsync(x => x.Id == id);
       
