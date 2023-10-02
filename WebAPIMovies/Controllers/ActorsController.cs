@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using WebAPIMovies.DTOs.Actor;
+using WebAPIMovies.DTOs.Pagination;
 using WebAPIMovies.Entities;
+using WebAPIMovies.Helpers;
 using WebAPIMovies.Services;
 
 namespace WebAPIMovies.Controllers
@@ -33,9 +35,12 @@ namespace WebAPIMovies.Controllers
     /// </summary>
     /// <returns></returns>
     [HttpGet(Name ="getActors")]
-    public async Task<ActionResult<List<ActorDTO>>> GetActors()
+    public async Task<ActionResult<List<ActorDTO>>> GetActors([FromQuery] PaginationDTO paginationDTO)
     {
-      List<Actor> actors = await context.Actors.ToListAsync();
+      var queryable = context.Actors.AsQueryable();
+      await HttpContext.InsertParametersPagination(queryable, paginationDTO.AmountRegistersByPage);
+
+      List<Actor> actors = await queryable.ApplyPagination(paginationDTO).ToListAsync();
       List<ActorDTO> actorDTOs = mapper.Map<List<ActorDTO>>(actors);
       return actorDTOs;
     }
@@ -152,6 +157,12 @@ namespace WebAPIMovies.Controllers
       return NoContent();
     }
 
+    /// <summary>
+    /// Update the specific actor property that receive in the body of request
+    /// </summary>
+    /// <param name="id">Id actor</param>
+    /// <param name="jsonPatchDocument">json patch object with the new data</param>
+    /// <returns></returns>
     [HttpPatch("{id:int}")]
     public async Task<ActionResult> PatchActor(int id, [FromBody] JsonPatchDocument<ActorPatchDTO> jsonPatchDocument)
     {
