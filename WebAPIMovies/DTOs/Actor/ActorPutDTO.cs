@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using WebAPIMovies.Validations;
 
 namespace WebAPIMovies.DTOs.Actor
 {
@@ -9,5 +10,9 @@ namespace WebAPIMovies.DTOs.Actor
     public string Name { get; set; }
 
     public DateTime DateOfBirth { get; set; }
+
+    [FileWeight(maximumWeightInMegaBytes: 2)]
+    [FileType(groupFileType: GroupFileType.Picture)]
+    public IFormFile Picture { get; set; }
   }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using WebAPIMovies.Services;
 
 namespace WebAPIMovies
 {
@@ -22,11 +23,17 @@ namespace WebAPIMovies
 
       services.AddControllers();
 
+      services.AddTransient<IFileStorage, FileStorageAzure>();
+
+      services.AddHttpContextAccessor();
+
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
       app.UseHttpsRedirection();
+
+      app.UseStaticFiles();
 
       app.UseRouting();
 

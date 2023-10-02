@@ -20,7 +20,8 @@ namespace WebAPIMovies.Helpers
 
       CreateMap<ActorCreationDTO, Actor>();
 
-      CreateMap<ActorPutDTO,Actor>();
+      CreateMap<ActorPutDTO,Actor>()
+        .ForMember(x=>x.Picture, options => options.Ignore());
 
     }
   }
