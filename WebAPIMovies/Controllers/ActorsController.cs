@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
@@ -151,5 +152,36 @@ namespace WebAPIMovies.Controllers
       return NoContent();
     }
 
+    [HttpPatch("{id:int}")]
+    public async Task<ActionResult> PatchActor(int id, [FromBody] JsonPatchDocument<ActorPatchDTO> jsonPatchDocument)
+    {
+      if(jsonPatchDocument is null)
+      {
+        return BadRequest();
+      }
+
+      Actor actorDB = await context.Actors.FirstOrDefaultAsync(x => x.Id == id);
+
+      if (actorDB is null)
+      {
+        return NotFound();
+      }
+
+      ActorPatchDTO actorPatchDTO = mapper.Map<ActorPatchDTO>(actorDB);
+      jsonPatchDocument.ApplyTo(actorPatchDTO,ModelState);
+
+      bool isValidModel = TryValidateModel(actorPatchDTO);
+      
+      if (!isValidModel)
+      {
+        return BadRequest(ModelState);
+      }
+
+      mapper.Map(actorPatchDTO, actorDB);
+
+      await context.SaveChangesAsync();
+      return NoContent();
+
+    }
   }
 }

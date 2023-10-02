@@ -21,7 +21,8 @@ namespace WebAPIMovies
         options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
       });
 
-      services.AddControllers();
+      services.AddControllers()
+        .AddNewtonsoftJson();
 
       services.AddTransient<IFileStorage, FileStorageAzure>();
 
