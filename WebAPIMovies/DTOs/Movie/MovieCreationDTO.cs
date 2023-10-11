@@ -17,5 +17,7 @@ namespace WebAPIMovies.DTOs.Movie
     [FileWeight(maximumWeightInMegaBytes:2)]
     [FileType(GroupFileType.Picture)]
     public IFormFile Poster { get; set; }
+
+    public List<int> GendersIds { get; set; }
   }
 }
