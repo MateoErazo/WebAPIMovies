@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using WebAPIMovies.DTOs.Actor;
 using WebAPIMovies.DTOs.Movie;
 using WebAPIMovies.Entities;
+using WebAPIMovies.Migrations;
 using WebAPIMovies.Services;
 
 namespace WebAPIMovies.Controllers
@@ -84,11 +85,25 @@ namespace WebAPIMovies.Controllers
         }
       }
 
+      SetOrderActors(movie);
       context.Add(movie);
       await context.SaveChangesAsync();
       MovieDTO movieDTO = mapper.Map<MovieDTO>(movie);
       return CreatedAtRoute("getMovieById", new { id= movie.Id}, movieDTO);
+      
     }
+
+    private void SetOrderActors(Movie movie)
+    {
+      if (movie.MoviesActors != null)
+      {
+        for (int i=0; i<movie.MoviesActors.Count; i++)
+        {
+          movie.MoviesActors[i].Order = i;
+        }
+      }
+    }
+
 
     /// <summary>
     /// Update an specific movie by It's Id
@@ -99,7 +114,10 @@ namespace WebAPIMovies.Controllers
     [HttpPut("{id:int}",Name ="putMovieById")]
     public async Task<ActionResult> PutMovieById(int id, [FromForm] MoviePutDTO movieUpdateDTO)
     {
-      Movie movieDB = await context.Movies.FirstOrDefaultAsync(x => x.Id == id);
+      Movie movieDB = await context.Movies
+        .Include(x=>x.MoviesActors)
+        .Include(x=>x.MoviesGenders)
+        .FirstOrDefaultAsync(x => x.Id == id);
 
       if (movieDB is null)
       {
@@ -125,6 +143,7 @@ namespace WebAPIMovies.Controllers
         }
       }
 
+      SetOrderActors(movieDB);
       await context.SaveChangesAsync();
       return NoContent();
     }

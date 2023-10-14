@@ -1,4 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+using WebAPIMovies.DTOs.MoviesActors;
+using WebAPIMovies.Helpers;
 using WebAPIMovies.Validations;
 
 namespace WebAPIMovies.DTOs.Movie
@@ -18,6 +21,10 @@ namespace WebAPIMovies.DTOs.Movie
     [FileType(GroupFileType.Picture)]
     public IFormFile Poster { get; set; }
 
+    [ModelBinder(BinderType = typeof(TypeBinder<List<int>>))]
     public List<int> GendersIds { get; set; }
+
+    [ModelBinder(BinderType = typeof(TypeBinder<List<ActorMoviesCreationDTO>>))]
+    public List<ActorMoviesCreationDTO> Actors { get; set; }
   }
 }
